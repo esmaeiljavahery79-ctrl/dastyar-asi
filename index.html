@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090e1c">
+<title>دستیار اسی ۲</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090e1c;color:#eef2ff;font-family:Tahoma,Arial;padding:16px}
+header{text-align:center;padding:20px 0}
+.logo{font-size:48px}
+h1{margin:8px;font-size:25px}
+.small{font-size:12px;color:#94a3b8}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#151e32;border:1px solid #293650;border-radius:16px;padding:14px;margin-bottom:12px}
+.card h2{font-size:15px;margin:0 0 12px}
+input,textarea,button{width:100%;padding:12px;margin-top:7px;border-radius:10px;font:inherit;font-size:14px}
+input,textarea{background:#0b1222;border:1px solid #34425e;color:white}
+textarea{min-height:90px}
+button{border:0;background:#67e8f9;color:#083344;font-weight:bold}
+button:active{opacity:.7}
+.output{margin-top:10px;color:#67e8f9;font-size:13px;overflow-wrap:anywhere}
+#chat{height:190px;overflow:auto;background:#0b1222;border-radius:10px;padding:10px}
+.msg{padding:9px;margin:6px 0;border-radius:9px;background:#1e293b;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+footer{text-align:center;color:#64748b;font-size:11px;padding:15px}
+</style>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon-192.png">
+</head>
+<body>
+<header>
+<div class="logo">🤖</div>
+<h1>دستیار اسی ۲</h1>
+<div class="small">نسخه دوم | ابزارهای شخصی</div>
+<div id="clock" class="output"></div>
+</header>
+
+<section class="card">
+<h2>💬 گفت‌وگو با دستیار</h2>
+<div id="chat">
+<div class="msg">سلام اسی! من نسخه دوم دستیار تو هستم. یکی از ابزارها را انتخاب کن یا پیامت را بنویس.</div>
+</div>
+<input id="message" placeholder="پیامت را بنویس..." onkeydown="if(event.key==='Enter')sendMessage()">
+<button onclick="sendMessage()">ارسال پیام</button>
+<div class="small">پاسخ‌های این نسخه آزمایشی و محلی هستند، نه پاسخ هوش مصنوعی آنلاین.</div>
+</section>
+
+<div class="grid">
+<section class="card">
+<h2>🧮 ماشین‌حساب</h2>
+<input id="num1" type="number" placeholder="عدد اول">
+<input id="num2" type="number" placeholder="عدد دوم">
+<button onclick="calc('+')">جمع</button>
+<button onclick="calc('-')">تفریق</button>
+<button onclick="calc('*')">ضرب</button>
+<button onclick="calc('/')">تقسیم</button>
+<div id="calcResult" class="output"></div>
+</section>
+
+<section class="card">
+<h2>📅 تاریخ و ساعت</h2>
+<div id="date"></div>
+<div id="time" class="output"></div>
+<button onclick="updateClock()">به‌روزرسانی</button>
+</section>
+</div>
+
+<section class="card">
+<h2>📝 دفتر یادداشت</h2>
+<textarea id="notes" placeholder="یادداشت‌هایت را بنویس..."></textarea>
+<button onclick="saveNotes()">ذخیره یادداشت‌ها</button>
+<button onclick="clearNotes()">پاک کردن یادداشت‌ها</button>
+<div id="noteStatus" class="output"></div>
+</section>
+
+<section class="card">
+<h2>🌐 آزمایش اینترنت</h2>
+<button onclick="internetTest()">بررسی اتصال</button>
+<div id="netResult" class="output"></div>
+</section>
+
+<footer>دستیار اسی ۲ · اجرا روی گوشی</footer>
+
+<script>
+function addMsg(who,text){
+ const box=document.getElementById('chat');
+ const el=document.createElement('div');
+ el.className='msg';
+ el.textContent=who+': '+text;
+ box.appendChild(el);
+ box.scrollTop=box.scrollHeight;
+}
+function sendMessage(){
+ const el=document.getElementById('message');
+ const m=el.value.trim();
+ if(!m)return;
+ addMsg('تو',m);
+ el.value='';
+ const q=m.toLowerCase();
+ let answer='این نسخه هنوز هوش مصنوعی آنلاین ندارد. فعلاً می‌توانم به چند دستور ساده پاسخ بدهم.';
+ if(m.includes('سلام'))answer='سلام اسی! آماده‌ام. 🤖';
+ else if(m.includes('ساعت')||m.includes('تاریخ'))answer=new Date().toLocaleString('fa-IR');
+ else if(m.includes('اسم')||m.includes('نامت'))answer='من دستیار اسی هستم، نسخه دوم آزمایشی.';
+ else if(m.includes('کمک'))answer='ابزارهای من: ماشین‌حساب، یادداشت، ساعت و بررسی اینترنت.';
+ else if(q.includes('hello'))answer='Hello! I am Asi Assistant.';
+ setTimeout(()=>addMsg('دستیار',answer),200);
+}
+function calc(op){
+ const a=document.getElementById('num1').value;
+ const b=document.getElementById('num2').value;
+ const out=document.getElementById('calcResult');
+ if(a===''||b===''){out.textContent='هر دو عدد را وارد کن.';return}
+ const x=Number(a),y=Number(b);
+ if(op==='/'&&y===0){out.textContent='تقسیم بر صفر ممکن نیست.';return}
+ const r=op==='+'?x+y:op==='-'?x-y:op==='*'?x*y:x/y;
+ out.textContent='نتیجه: '+r;
+}
+function saveNotes(){
+ try{
+ localStorage.setItem('asi_notes_v2',document.getElementById('notes').value);
+ document.getElementById('noteStatus').textContent='یادداشت‌ها ذخیره شدند.';
+ }catch(e){document.getElementById('noteStatus').textContent='ذخیره‌سازی ممکن نیست.'}
+}
+function clearNotes(){
+ if(confirm('همه یادداشت‌ها پاک شوند؟')){
+ document.getElementById('notes').value='';
+ localStorage.removeItem('asi_notes_v2');
+ document.getElementById('noteStatus').textContent='یادداشت‌ها پاک شدند.';
+ }
+}
+function updateClock(){
+ const d=new Date();
+ document.getElementById('date').textContent=d.toLocaleDateString('fa-IR');
+ document.getElementById('time').textContent=d.toLocaleTimeString('fa-IR');
+}
+async function internetTest(){
+ const out=document.getElementById('netResult');
+ out.textContent='در حال بررسی...';
+ try{
+ await fetch('https://www.google.com/generate_204?'+Date.now(),{mode:'no-cors',cache:'no-store'});
+ out.textContent='درخواست ارسال شد؛ اینترنت احتمالاً برقرار است.';
+ }catch(e){out.textContent='بررسی ناموفق بود؛ اینترنت یا دسترسی مرورگر را بررسی کن.'}
+}
+try{document.getElementById('notes').value=localStorage.getItem('asi_notes_v2')||''}catch(e){}
+updateClock();
+setInterval(updateClock,1000);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
+</script>
+</body>
+</html>
